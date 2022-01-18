@@ -11,16 +11,17 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 
+import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 # SECURE_SSL_REDIRECT = True
-# STATIC_URL = '/static/'
+STATICFILES_DIRS = ['static']
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,12 +38,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Apps configs
+    'challenge.apps.ChallengeConfig',
+
+    # Pip packages
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +90,12 @@ WSGI_APPLICATION = 'planeks.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fakecsv',
+        'USER': 'postgres',
+        'PASSWORD': '16455461DaN',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -121,10 +133,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+django_heroku.settings(locals())

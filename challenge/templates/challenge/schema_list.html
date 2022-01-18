@@ -1,0 +1,31 @@
+{% extends 'navbar/navbar.html' %}
+{% block content %}
+{% if schema_list %}
+<div class="container-xxl my-md-4 bd-layout">
+<table class="table table-bordered">
+  <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Modified</th>
+        <th scope="col">Edit Scheme</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for schema in schema_list %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a href="{% url 'fakecsv:update' schema.id %}">{{ schema.name }}</a></td>
+        <td>{{ schema.modified_date }}</td>
+        <td><a href="{% url 'fakecsv:update' schema.id %}">Update</a> <a class="text-danger" href="{% url 'fakecsv:delete' schema.id %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+  <p>You don't have any schema created</p>
+{% endif %}
+</div>
+{% endblock %}

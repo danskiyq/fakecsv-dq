@@ -1,0 +1,16 @@
+{% load static %}
+<link rel="icon" href="{% static 'favicon3.ico' %}">
+<title>Login</title>
+<link href="{% static 'login.css' %}" type="text/css" rel="stylesheet">
+<div class="login-page">
+    {% load bootstrap5 %}
+    <div class="form">
+    <form method="post" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" value="Login">Login</button>
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+    </div>
+</div>
+

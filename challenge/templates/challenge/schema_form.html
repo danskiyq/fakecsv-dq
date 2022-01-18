@@ -1,0 +1,219 @@
+{% extends 'navbar/navbar.html' %}
+{% load bootstrap5 %}
+{% bootstrap_javascript %}
+{% block content %}
+    <form method="post">
+    {% csrf_token %}
+        <div class="container-fluid" style="margin-left: 2%; margin-top: 1.4%">
+        <h2 class="">New Schema</h2>
+    <div class="row">
+        <div class="col-4">
+            <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
+        </div>
+        <div class="col-5"></div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-3" onclick="return checkInput()">Create schema</button>
+            </div>
+    </div>
+        <br/>
+        <div class="row">
+            <div class="col-4">
+                <label>Column separator</label>
+            <select class="form-select" aria-label="Default select example" id="separator" name="separator">
+                <option selected value="1">Comma (,)</option>
+                <option value="2">Semicolon (;)</option>
+                <option value="3">Tab (\t)</option>
+                <option value="4">Space ( )</option>
+                <option value="5">Pipe (|)</option>
+            </select>
+            </div>
+            <div class="col-auto"></div>
+        </div>
+        <br/>
+        <div class="row">
+             <div class="col-4">
+                <label>String character</label>
+            <select class="form-select" aria-label="Default select example" id="string" name="string">
+                <option selected value="1">Double-quote (")</option>
+                <option value="2">Single-quote (')</option>
+            </select>
+            </div>
+            <div class="col-auto"></div>
+        </div>
+        <br/>
+        <ul class="list-group list-group-flush" id="schema-columns">
+            <li class="list-group-item"><h3>Schema columns</h3></li>
+        </ul>
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3 border border-end-0">
+                            <div class="form-group">
+                                <label for="create_row_name" class="form-label mt-4">Column name</label>
+                                <input type="text" class="form-control" id="create_row_name">
+                                <br/>
+                                <button type="button" id="create-column-but" class="btn btn-outline-info" onclick="addColumn(); return false;">Add column</button>
+                            </div>
+                        </div>
+                        <div class="col-3 border border-start-0 border-end-0">
+                            <div class="form-group">
+                                <label class="form-label mt-4">Type</label>
+                                <select class="form-select" aria-label="Default select example" id="create-row-select-" onchange="showRange(this)">
+                                    <option selected>_____</option>
+                                    <option value="1">Full name</option>
+                                    <option value="2">Job</option>
+                                    <option value="3">Email</option>
+                                    <option value="4">Domain name</option>
+                                    <option value="5">Phone number</option>
+                                    <option value="6">Company name</option>
+                                    <option value="7">Text</option>
+                                    <option value="8">Integer</option>
+                                    <option value="9">Address</option>
+                                    <option value="10">Date</option>
+                                </select>
+                            </div>
+                        </div>
+                      <div class="col-1 border border-start-0 border-end-0">
+                            <div id="range-min-" style="display: none;">
+                            <div class="form-group has-success">
+                                <label for="create-row-min" class="form-label mt-4">From</label>
+                                <input type="number" class="form-control" id="create-row-min" value="">
+
+                            </div>
+                            </div>
+
+                        </div>
+                        <div class="col-1 border border-start-0 border-end-0">
+                            <div id="range-max-" style="display: none;">
+                            <label for="create-row-max" class="form-label mt-4">To</label>
+                            <input type="number" class="form-control" id="create-row-max" value="">
+                            </div>
+                        </div>
+                         <div class="col-2 border border-start-0 border-end-0">
+                             <label for="column-id" class="form-label mt-4">Order</label>
+                             <input type="text" class="form-control" id="column-id" value="0" disabled>
+                         </div>
+                        <div class="col-1 border border-start-0">
+                         </div>
+
+                    </div>
+
+            </li>
+
+        </ul>
+        </div>
+    <input type="hidden" id="cols" name="cols">
+    </form>
+    <script type="text/javascript">
+    let max_id = 0
+    let new_col = document.getElementById('column-id');
+    function showRange(element) {
+        if (element.value === '7' || element.value === '8') {
+            element.parentNode.parentNode.parentNode.children[2].children[0].style.display = 'block';
+            element.parentNode.parentNode.parentNode.children[3].children[0].style.display = 'block';
+        } else {
+            element.parentNode.parentNode.parentNode.children[2].children[0].style.display = 'none';
+            element.parentNode.parentNode.parentNode.children[3].children[0].style.display = 'none';
+        }
+    }
+    const start_name = '{{ name|safe }}';
+    if(start_name.length !== 0){
+        let string = {{ string|safe }};
+        let separator = {{ separator|safe }};
+        let start_objects = {{ objects|safe }};
+        console.log(string, separator, start_objects);
+        document.getElementById('name').value = start_name;
+        document.getElementById('separator').selectedIndex = separator - 1;
+        document.getElementById('string').selectedIndex = string - 1;
+        for(const obj in start_objects){
+            console.log(start_objects[obj][0], start_objects[obj][1]);
+                let x = document.createElement('li');
+                x.className = 'list-group-item border-0';
+                x.innerHTML = '<div class="row"> <div class="col-3"> <div class="form-group"> <label class="form-label mt-4">Column name</label> <input type="text" class="form-control" name="col-name" value="' +start_objects[obj][0]+ '"> <br/></div> </div><div class="col-3"><div class="form-group"><label class="form-label mt-4">Type</label><select class="form-select" aria-label="Default select example" name="col-select" onchange="showRange(this)">' +
+                    '<option value="1" selected>Full name</option><option value="2">Job</option><option value="3">Email</option><option value="4">Domain name</option><option value="5">Phone number</option><option value="6">Company name</option><option value="7">Text</option><option value="8">Integer</option><option value="9">Address</option><option value="10">Date</option></select></div></div>' +
+                    '<div class="col-1"><div style="display: none;"><div class="form-group has-success"><label class="form-label mt-4">From</label><input type="number" class="form-control" name="min-value" value="' + start_objects[obj][2] +'"></div></div></div><div class="col-1"><div style="display: none;"><label class="form-label mt-4">To</label><input type="number" class="form-control" name="max-value" value="'+ start_objects[obj][3]+'"></div></div><div class="col-2"><label class="form-label mt-4">Order</label><input type="text" class="form-control" name="col" value="'+max_id+ '" disabled></div><div class="col-1"><label class="form-label mt-4" style="visibility: hidden">__________________________</label><button type="button" class="btn btn-outline-danger" onclick="deleteColumn(this);return false;">Delete</button></div></div>';
+                document.getElementById('schema-columns').appendChild(x);
+                document.getElementById('schema-columns').lastChild.childNodes[0].childNodes[2].firstChild.childNodes[1].selectedIndex = start_objects[obj][1] - 1;
+                showRange(document.getElementById('schema-columns').lastChild.childNodes[0].childNodes[2].firstChild.childNodes[1]);
+                max_id++;
+                new_col.setAttribute('value', max_id);
+                document.getElementById('cols').setAttribute('value', max_id);
+                }
+    }
+        function addColumn() {
+
+                let x = document.createElement('li');
+                x.className = 'list-group-item border-0';
+                x.innerHTML = '<div class="row"> <div class="col-3"> <div class="form-group"> <label class="form-label mt-4">Column name</label> <input type="text" class="form-control" name="col-name" value="' + document.getElementById('create_row_name').value + '"> <br/></div> </div><div class="col-3"><div class="form-group"><label class="form-label mt-4">Type</label><select class="form-select" aria-label="Default select example" name="col-select" onchange="showRange(this)">' +
+                    '<option value="1" selected>Full name</option><option value="2">Job</option><option value="3">Email</option><option value="4">Domain name</option><option value="5">Phone number</option><option value="6">Company name</option><option value="7">Text</option><option value="8">Integer</option><option value="9">Address</option><option value="10">Date</option></select></div></div>' +
+                    '<div class="col-1"><div style="display: none;"><div class="form-group has-success"><label class="form-label mt-4">From</label><input type="number" class="form-control" name="min-value" value="' + document.getElementById('create-row-min').value +'"></div></div></div><div class="col-1"><div style="display: none;"><label class="form-label mt-4">To</label><input type="number" class="form-control" name="max-value" value="'+ document.getElementById('create-row-max').value+'"></div></div><div class="col-2"><label class="form-label mt-4">Order</label><input type="text" class="form-control" name="col" value="' + max_id + '" disabled></div><div class="col-1"><label class="form-label mt-4" style="visibility: hidden">__________________________</label><button type="button" class="btn btn-outline-danger" onclick="deleteColumn(this);return false;">Delete</button></div></div>';
+                document.getElementById('schema-columns').appendChild(x);
+                document.getElementById('schema-columns').lastChild.childNodes[0].childNodes[2].firstChild.childNodes[1].selectedIndex = document.getElementById('create-row-select-').value - 1;
+                showRange(document.getElementById('schema-columns').lastChild.childNodes[0].childNodes[2].firstChild.childNodes[1]);
+                max_id++;
+                new_col.setAttribute('value', max_id);
+                document.getElementById('cols').setAttribute('value', max_id);
+                }
+
+        function deleteColumn(column) {
+            if(column.parentNode.parentNode.parentNode.children[0].children[4].children[1].value != max_id - 1){
+                let counter = column.parentNode.parentNode.parentNode.children[0].children[4].children[1].value;
+                let next = column.parentNode.parentNode.parentNode.nextSibling;
+                for(counter; counter < max_id-1; counter++){
+                    --next.children[0].children[4].children[1].value;
+                    next = next.nextSibling;
+                }
+
+            }
+            --max_id;
+            document.getElementById('schema-columns').removeChild(column.parentNode.parentNode.parentNode);
+            new_col.setAttribute('value', max_id);
+            document.getElementById('cols').setAttribute('value', max_id);
+    }
+    function checkInput() {
+        let names_arr = [];
+        const schema_name = document.getElementById('name').value;
+        const names = {{ names|safe }};
+        if(! schema_name){
+                        alert('schema name must be included');
+                        return false;
+                    }
+        for(const z in names){
+            if(schema_name === names[z]['fields']['name'] && schema_name !== start_name){
+                alert('Schema with such name already exists');
+                return false;
+            }
+        }
+
+        if(max_id === 0){
+            alert('at least one column must be added');
+            return false;
+        }
+            for (let i = 1; i < max_id + 1; i++) {
+                const name = document.getElementById('schema-columns').children[i].children[0].children[0].children[0].children[1].value;
+                const selected = document.getElementById('schema-columns').children[i].children[0].children[1].children[0].children[1].value;
+
+                if (!name) {
+                    alert('all columns must be named');
+                    return false;
+                }
+                else if(selected === '7' || selected === '8'){
+                    if(!(document.getElementById('schema-columns').children[i].children[0].children[2].children[0].children[0].children[1].value && document.getElementById('schema-columns').children[i].children[0].children[3].children[0].children[0].children[1].value)){
+                        alert('columns with range values must include minimal and maximum value');
+                        return false;
+                    }
+                }
+                else if(!(names_arr.includes(name))){
+                    names_arr.push(name);
+                }
+                else {
+                    alert('column names must be unique');
+                    return false;
+                }
+            }
+        }
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<div class="row">
+    <div class="col-3 border border-start-0 border-end-0">
+        <div class="form-group">
+            <label for="create_row_select" class="form-label mt-4">Type</label>
+            <select class="form-select" aria-label="Default select example" onchange="showRange(this)">
+                <option selected>_____</option>
+                <option value="1">Full name</option>
+                <option value="2">Job</option>
+                <option value="3">Email</option>
+                <option value="4">Domain name</option>
+                <option value="5">Phone number</option>
+                <option value="6">Company name</option>
+                <option value="7">Text</option>
+                <option value="8">Integer</option>
+                <option value="9">Address</option>
+                <option value="10">Date</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="col-1 border border-start-0 border-end-0">
+        <div id="range-min" style="display: none;">
+        <div class="form-group has-success">
+            <label for="create_row_start_range" class="form-label mt-4">From</label>
+            <input type="number" class="form-control">
+
+        </div>
+        </div>
+
+    </div>
+    <div class="col-1 border border-start-0 border-end-0">
+        <div id="range-max" style="display: none;">
+        <label for="create_row_end_range" class="form-label mt-4">To</label>
+        <input type="number" pattern="[1-9]+[0-9]*" class="form-control">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3 border border-start-0 border-end-0">
+        <div class="form-group">
+            <label for="create_row_select" class="form-label mt-4">Type</label>
+            <select class="form-select" aria-label="Default select example" onchange="showRange(this)">
+                <option selected>_____</option>
+                <option value="1">Full name</option>
+                <option value="2">Job</option>
+                <option value="3">Email</option>
+                <option value="4">Domain name</option>
+                <option value="5">Phone number</option>
+                <option value="6">Company name</option>
+                <option value="7">Text</option>
+                <option value="8">Integer</option>
+                <option value="9">Address</option>
+                <option value="10">Date</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="col-1 border border-start-0 border-end-0">
+        <div id="range-min" style="display: none;">
+        <div class="form-group has-success">
+            <label for="create_row_start_range" class="form-label mt-4">From</label>
+            <input type="number" class="form-control">
+
+        </div>
+        </div>
+
+    </div>
+    <div class="col-1 border border-start-0 border-end-0">
+        <div id="range-max" style="display: none;">
+        <label for="create_row_end_range" class="form-label mt-4">To</label>
+        <input type="number" pattern="[1-9]+[0-9]*" class="form-control">
+        </div>
+    </div>
+</div>
+<select id="selector" onchange="changeSelected(this.value - 1)">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+</select>
+<script>
+    let counter = 0;
+    function showRange(element){
+        if(element.value === '7' || element.value === '8'){
+        console.log(element.parentNode.parentNode.parentNode.childNodes);
+        element.parentNode.parentNode.parentNode.childNodes[3].childNodes[1].style.display = 'block';
+        element.parentNode.parentNode.parentNode.childNodes[5].childNodes[1].style.display = 'block';
+        }
+        else{
+            element.parentNode.parentNode.parentNode.childNodes[3].childNodes[1].style.display = 'none';
+            element.parentNode.parentNode.parentNode.childNodes[5].childNodes[1].style.display = 'none';
+        }
+    }
+    function  addElement(){
+        let x = document.createElement('li');
+        x.setAttribute("id", "list-object-");
+        x.innerHTML = 'im list #' + counter + '<button onclick="deleteElement(this)">delete</button>';
+        document.getElementById('list-t').appendChild(x);
+        counter++;
+    }
+    function deleteElement(element){
+        document.getElementById('list-t').removeChild(element.parentNode);
+        --counter;
+    }
+    function changeSelected(element){
+        document.getElementById('selector').selectedIndex = element;
+
+    }
+</script>

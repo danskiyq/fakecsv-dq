@@ -1,0 +1,14 @@
+{% extends 'navbar/navbar.html' %}
+{% block content %}
+    <div class="container-sm">
+<h1>Delete Schema</h1>
+
+<p>Are you sure you want to delete the schema: {{ schema }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <button type="submit">Yes, delete</button>
+    <button onclick="window.location.href='{% url 'fakecsv:main' %}'; return false;">Cancel</button>
+</form>
+    </div>
+{% endblock %}
