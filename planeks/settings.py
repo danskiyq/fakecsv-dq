@@ -92,8 +92,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fakecsv',
-        'USER': 'postgres',
-        'PASSWORD': '16455461DaN',
+        'USER': 'userdq',
+        'PASSWORD': 'passworddq',
         'HOST': 'localhost',
         'PORT': '',
     }
