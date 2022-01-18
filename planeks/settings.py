@@ -90,12 +90,8 @@ WSGI_APPLICATION = 'planeks.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fakecsv',
-        'USER': 'userdq',
-        'PASSWORD': 'passworddq',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'ddb.sqlite3',
     }
 }
 
