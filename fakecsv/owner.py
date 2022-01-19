@@ -108,13 +108,11 @@ def save_schema(items, owner, schema=None, update=False):
         if schema.read_instructions:  # Adding read instructions to Schema (mentioned in Schema model)
             schema.read_instructions += ';'
         schema.read_instructions += f'{types[i]},{item.id}'
-
-    path = os.path.join('csv_files', str(owner.id))
     schema.file = ''
     schema.save()
-    schema.file = os.path.join(path, f'{schema.id}.csv')
+    schema.file = os.path.join(str(owner.id), f'{schema.id}.csv')
     schema.save()
-    path = os.path.join('media', path)
+    path = os.path.join('media', str(owner.id))
     # checking if we need to create new csv of not
     if not update:
         Path(path).mkdir(exist_ok=True)
