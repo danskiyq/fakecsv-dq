@@ -1,0 +1,41 @@
+{% extends 'navbar/navbar.html' %}
+{% block content %}
+    {% load static %}
+{% if schema_list %}
+<div class="container-xxl my-md-4 bd-layout">
+    <form method="post">
+    {% csrf_token %}
+    <div class="row">
+    <div class="col-2"><h3>Data sets</h3></div>
+        <div class="col-5"></div><div class="col-auto"><h4>Rows:</h4></div><div class="col-auto"><input value="500" class="form-control" name='rows' type="number"/></div><div class="col-auto"><button class="btn btn-primary mb-3" type="submit">Generate data</button></div></div>
+    </form>
+    <table class="table table-bordered">
+  <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Created</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for schema in schema_list %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a href="{% url 'fakecsv:update' schema.id %}">{{ schema.name }}</a></td>
+        <td>{{ schema.created_date|default_if_none:'Never' }}</td>
+        <td><span class="badge bg-info">Never created</span></td>
+        <td><a href="{{ schema.file.url }}">Download</a></td>
+    <script>console.log('{{ schema.file|safe }}')</script>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+  <p>You don't have any schema created</p>
+{% endif %}
+</div>
+{% endblock %}

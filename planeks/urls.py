@@ -23,10 +23,10 @@ from django.views.generic.base import RedirectView, TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('fakecsv/', include('challenge.urls')),
+    path('fakecsv/', include('fakecsv.urls')),
     path(
         "favicon3.ico",
         RedirectView.as_view(url=staticfiles_storage.url("favicon3.ico")),
     ),
     path('test/', TemplateView.as_view(template_name='playwith.html'))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

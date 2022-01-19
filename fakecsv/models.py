@@ -15,6 +15,8 @@ class Schema(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     read_instructions = models.CharField(max_length=1000)
     modified_date = models.DateField(default=datetime.date.today)
+    created_date = models.DateField(null=True)
+    file = models.FileField()
 
     def __str__(self):
         return self.name

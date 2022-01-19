@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
-from .owner import OwnerListView, OwnerUpdateView, OwnerDeleteView, parse_instructions, save_schema
+from .owner import OwnerListView, OwnerUpdateView, OwnerDeleteView, parse_instructions, save_schema, gen_fake_csv
 
 
 class SchemaCreateView(LoginRequiredMixin, CreateView):
@@ -26,7 +26,7 @@ class SchemaCreateView(LoginRequiredMixin, CreateView):
 
         save_schema(items, owner)
 
-        return redirect('fakecsv:main')
+        return redirect('fakecsv:edit')
 
 
 class SchemaListView(OwnerListView):
@@ -37,7 +37,7 @@ class SchemaDeleteView(OwnerDeleteView):
     model = Schema
 
     def post(self, request, *args, **kwargs):
-        path = r'csv_files\\' + str(self.request.user.id) + '/' + f'{self.get_object().id}.csv'
+        path = r'media\\csv_files\\' + str(self.request.user.id) + '/' + f'{self.get_object().id}.csv'
         os.remove(path)
         return super().post(request)
 
@@ -62,4 +62,17 @@ class SchemaUpdateView(OwnerUpdateView):
 
         save_schema(items, owner, schema=self.get_object(), update=True)
 
-        return redirect('fakecsv:main')
+        return redirect('fakecsv:edit')
+
+
+class GenerateCsvView(OwnerListView):
+    model = Schema
+    template_name = 'fakecsv/generate_csv_list.html'
+
+    def post(self, request):
+        owner = request.user
+        rows = int(request.POST.get('rows'))
+
+        gen_fake_csv(owner, rows)
+
+        return super(GenerateCsvView, self).get(request)

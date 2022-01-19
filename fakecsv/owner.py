@@ -1,8 +1,11 @@
 import os
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+import csv
+from faker import Faker
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, DeleteView
+
 from .models import *
 
 
@@ -15,11 +18,6 @@ def get_model(key):
 def get_separator(key):
     separator_dict = {'1': ',', '2': ';', '3': '\t', '4': ' ', '5': '|'}
     return separator_dict[key]
-
-
-def get_string(key):
-    string_dict = {'1': '"', '2': "'"}
-    return string_dict[key]
 
 
 class OwnerListView(ListView):
@@ -67,16 +65,21 @@ def parse_instructions(instructions):
         for instruction in instructions:
             ins = instruction.split(',')
             obj = get_model(ins[0]).objects.get(id=ins[1])
-            if ins[0] == '8' or ins[0] == '9':
+            if ins[0] == '7' or ins[0] == '8':
                 r_min, r_max = obj.min_range, obj.max_range
             res.append([get_model(ins[0]).objects.get(id=ins[1]).name, ins[0], r_min, r_max])
+            r_min, r_max = '', ''
     else:
         ins = instructions.split(',')
-        res.append([get_model(ins[0]).objects.get(id=ins[1]).name, ins[0]])
+        obj = get_model(ins[0]).objects.get(id=ins[1])
+        if ins[0] == '8' or ins[0] == '9':
+            r_min, r_max = obj.min_range, obj.max_range
+        res.append([obj.get(id=ins[1]).name, ins[0], r_min, r_max])
     return res
 
 
 def save_schema(items, owner, schema=None, update=False):
+    # checking if we are creating or updating schema
     if not schema:
         schema = Schema(name=items.get('name'), separator=items.get('separator'),
                         string=items.get('string'),
@@ -88,6 +91,7 @@ def save_schema(items, owner, schema=None, update=False):
         schema.string = items.get('string')
         schema.modified_date = str(datetime.date.today())
 
+    # getting values in different lists
     names = items.getlist('col-name')
     types = items.getlist('col-select')
     min_values = items.getlist('min-value')
@@ -105,11 +109,39 @@ def save_schema(items, owner, schema=None, update=False):
             schema.read_instructions += ';'
         schema.read_instructions += f'{types[i]},{item.id}'
 
+    path = r'csv_files\\' + str(owner.id)
+    schema.file = ''
     schema.save()
+    schema.file = os.path.join(path, f'{schema.id}.csv')
+    schema.save()
+    path = 'media\\' + path
+    # checking if we need to create new csv of not
     if not update:
-        path = r'csv_files\\' + str(owner.id)
         if not os.path.isdir(path):
             os.mkdir(path=path)
         open(os.path.join(path, f'{schema.id}.csv'), 'x').close()
+
+
+def gen_fake_csv(owner, rows):
+    schemas = Schema.objects.filter(owner=owner)
+    fake = Faker()
+
+    fake_dict = {'1': fake.name, '2': fake.job, '3': fake.email, '4': fake.domain_name,
+                 '5': fake.phone_number, '6': fake.company, '7': fake.paragraph,
+                 '8': fake.random_int, '9': fake.address, '10': fake.date}
+    for schema in schemas:
+        csv_objects = parse_instructions(schema.read_instructions)
+        path = r'media\\csv_files\\' + str(owner.id)
+
+        with open(os.path.join(path, f'{schema.id}.csv'), 'w+') as f:
+            writer = csv.writer(f, delimiter=get_separator(schema.separator))
+            writer.writerow([i[0] for i in csv_objects])
+            for _ in range(rows):
+                data = [fake_dict[i[1]]() if (i[1] not in ["7", "8"]) else
+                        fake_dict[i[1]](min=i[2], max=i[3]) if i[1] != '7'
+                        else fake_dict[i[1]](fake.random_int(i[2], i[3]), False)
+                        for i in csv_objects]
+                writer.writerow(data)
+        schema.created_date = str(datetime.date.today())
 
 
