@@ -109,7 +109,7 @@ def save_schema(items, owner, schema=None, update=False):
             schema.read_instructions += ';'
         schema.read_instructions += f'{types[i]},{item.id}'
 
-    path = r'csv_files\\' + str(owner.id)
+    path = r'csv_files/' + str(owner.id)
     schema.file = ''
     schema.save()
     schema.file = os.path.join(path, f'{schema.id}.csv')
