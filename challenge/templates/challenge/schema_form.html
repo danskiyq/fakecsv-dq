@@ -122,12 +122,10 @@
         let string = {{ string|safe }};
         let separator = {{ separator|safe }};
         let start_objects = {{ objects|safe }};
-        console.log(string, separator, start_objects);
         document.getElementById('name').value = start_name;
         document.getElementById('separator').selectedIndex = separator - 1;
         document.getElementById('string').selectedIndex = string - 1;
         for(const obj in start_objects){
-            console.log(start_objects[obj][0], start_objects[obj][1]);
                 let x = document.createElement('li');
                 x.className = 'list-group-item border-0';
                 x.innerHTML = '<div class="row"> <div class="col-3"> <div class="form-group"> <label class="form-label mt-4">Column name</label> <input type="text" class="form-control" name="col-name" value="' +start_objects[obj][0]+ '"> <br/></div> </div><div class="col-3"><div class="form-group"><label class="form-label mt-4">Type</label><select class="form-select" aria-label="Default select example" name="col-select" onchange="showRange(this)">' +
@@ -158,7 +156,7 @@
                 document.getElementById('create-row-select-').selectedIndex = 0;
                 document.getElementById('create-row-min').value = '';
                 document.getElementById('create-row-max').value = '';
-                showRange(document.getElementById('create-row-select-'))
+                showRange(document.getElementById('create-row-select-'));
                 }
 
         function deleteColumn(column) {
