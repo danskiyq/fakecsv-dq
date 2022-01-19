@@ -24,7 +24,7 @@ class SchemaCreateView(LoginRequiredMixin, CreateView):
         owner = request.user
         items = request.POST
 
-        save_schema(items, owner, request.user.id)
+        save_schema(items, owner)
 
         return redirect('fakecsv:main')
 
@@ -35,11 +35,6 @@ class SchemaListView(OwnerListView):
 
 class SchemaDeleteView(OwnerDeleteView):
     model = Schema
-
-    def post(self, request, *args, **kwargs):
-        path = r'csv_files/' + str(self.request.user.id) + '/' + f'{self.get_object().id}.csv'
-        os.remove(path)
-        return super().post(request)
 
 
 class SchemaUpdateView(OwnerUpdateView):
@@ -60,6 +55,6 @@ class SchemaUpdateView(OwnerUpdateView):
         owner = request.user
         items = request.POST
 
-        save_schema(items, owner, request.user.id, schema=self.get_object(), update=True)
+        save_schema(items, owner, schema=self.get_object())
 
         return redirect('fakecsv:main')

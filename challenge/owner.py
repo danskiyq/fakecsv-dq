@@ -76,8 +76,7 @@ def parse_instructions(instructions):
     return res
 
 
-def save_schema(items, owner, user_id, schema=None, update=False):
-
+def save_schema(items, owner, schema=None):
     if not schema:
         schema = Schema(name=items.get('name'), separator=items.get('separator'),
                         string=items.get('string'),
@@ -107,10 +106,3 @@ def save_schema(items, owner, user_id, schema=None, update=False):
         schema.read_instructions += f'{types[i]},{item.id}'
 
     schema.save()
-
-    # Creating csv file in folder dedicated for user id
-    if not update:
-        path = r'csv_files\\' + str(user_id)
-        if not os.path.isdir(path):
-            os.mkdir(path)
-        f = open(path + f'/{schema.id}.csv', 'x')
