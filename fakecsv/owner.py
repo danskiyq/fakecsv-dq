@@ -109,12 +109,12 @@ def save_schema(items, owner, schema=None, update=False):
             schema.read_instructions += ';'
         schema.read_instructions += f'{types[i]},{item.id}'
 
-    path = r'csv_files/' + str(owner.id)
+    path = os.path.join('csv_files', str(owner.id))
     schema.file = ''
     schema.save()
     schema.file = os.path.join(path, f'{schema.id}.csv')
     schema.save()
-    path = 'media/' + path
+    path = os.path.join('media', path)
     # checking if we need to create new csv of not
     if not update:
         if not os.path.isdir(path):
@@ -131,7 +131,7 @@ def gen_fake_csv(owner, rows):
                  '8': fake.random_int, '9': fake.address, '10': fake.date}
     for schema in schemas:
         csv_objects = parse_instructions(schema.read_instructions)
-        path = r'media\\csv_files/' + str(owner.id)
+        path = os.path.join('media', 'csv_files')
 
         with open(os.path.join(path, f'{schema.name}.csv'), 'w+') as f:
             writer = csv.writer(f, delimiter=get_separator(schema.separator))
