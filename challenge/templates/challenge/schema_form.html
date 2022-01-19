@@ -154,6 +154,11 @@
                 max_id++;
                 new_col.setAttribute('value', max_id);
                 document.getElementById('cols').setAttribute('value', max_id);
+                document.getElementById('create_row_name').value = '';
+                document.getElementById('create-row-select-').selectedIndex = 0;
+                document.getElementById('create-row-min').value = '';
+                document.getElementById('create-row-max').value = '';
+                showRange(document.getElementById('create-row-select-'))
                 }
 
         function deleteColumn(column) {
