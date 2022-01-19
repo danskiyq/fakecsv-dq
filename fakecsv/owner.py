@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, DeleteView
 
 from .models import *
-
+from pathlib import Path
 
 def get_model(key):
     models_dict = {'1': FullName, '2': Job, '3': Email, '4': DomainName,
@@ -117,8 +117,7 @@ def save_schema(items, owner, schema=None, update=False):
     path = os.path.join('media', path)
     # checking if we need to create new csv of not
     if not update:
-        if not os.path.isdir(path):
-            os.mkdir(path=path)
+        Path(path).mkdir(exist_ok=True)
         open(os.path.join(path, f'{schema.id}.csv'), 'x').close()
 
 
