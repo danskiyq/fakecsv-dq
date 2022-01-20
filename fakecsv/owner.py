@@ -9,6 +9,7 @@ from django.views.generic import ListView, UpdateView, DeleteView
 from .models import *
 from pathlib import Path
 
+
 def get_model(key):
     models_dict = {'1': FullName, '2': Job, '3': Email, '4': DomainName,
                    '5': PhoneNumber, '6': CompanyName, '7': Text, '8': Integer, '9': Address, '10': Date}
@@ -109,14 +110,15 @@ def save_schema(items, owner, schema=None, update=False):
             schema.read_instructions += ';'
         schema.read_instructions += f'{types[i]},{item.id}'
     schema.file = ''
+
     schema.save()
-    schema.file = os.path.join(str(owner.id), f'{schema.id}.csv')
+    path = str(owner.id) + f'/{schema.name}.csv'
+    schema.file = path
     schema.save()
-    path = os.path.join('media', str(owner.id))
+    path = settings.MEDIA_ROOT + '/' + str(owner.id)
     # checking if we need to create new csv of not
     if not update:
         Path(path).mkdir(exist_ok=True)
-        open(os.path.join(path, f'{schema.id}.csv'), 'x').close()
 
 
 def gen_fake_csv(owner, rows):
@@ -128,8 +130,8 @@ def gen_fake_csv(owner, rows):
                  '8': fake.random_int, '9': fake.address, '10': fake.date}
     for schema in schemas:
         csv_objects = parse_instructions(schema.read_instructions)
-
-        with open(os.path.join('media', f'{schema.name}.csv'), 'w+') as f:
+        filepath = os.path.join('media', f'{owner.id}')
+        with open(os.path.join(filepath, f'{schema.name}.csv'), 'w+') as f:
             writer = csv.writer(f, delimiter=get_separator(schema.separator))
             writer.writerow([i[0] for i in csv_objects])
             for _ in range(rows):

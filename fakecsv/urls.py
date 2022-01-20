@@ -1,5 +1,4 @@
 from django.urls import path, reverse_lazy
-from django.views.generic import TemplateView
 from . import views
 
 app_name = 'fakecsv'

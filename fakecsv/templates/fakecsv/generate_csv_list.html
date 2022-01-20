@@ -27,7 +27,7 @@
         <td><a href="{% url 'fakecsv:update' schema.id %}">{{ schema.name }}</a></td>
         <td>{{ schema.created_date|default_if_none:'Never' }}</td>
         <td><span class="badge bg-info">Never created</span></td>
-        <td><a href="{{schema.file.url}}">Download</a></td>
+        <td><a href="{{  schema.file.url }}">Download</a></td>
     <script>console.log('{{ schema.file.url|safe }}')</script>
     </tr>
   {% endfor %}

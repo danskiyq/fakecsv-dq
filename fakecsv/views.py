@@ -37,7 +37,7 @@ class SchemaDeleteView(OwnerDeleteView):
     model = Schema
 
     def post(self, request, *args, **kwargs):
-        path = r'media/' + str(self.request.user.id) + '/' + f'{self.get_object().id}.csv'
+        path = settings.MEDIA_ROOT + '/' + str(self.request.user.id) + '/' + f'{self.get_object().name}.csv'
         os.remove(path)
         return super().post(request)
 
