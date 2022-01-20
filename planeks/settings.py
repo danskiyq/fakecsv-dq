@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 
-import django_heroku
+# import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 
 # Quick-start development settings - unsuitable for production
@@ -143,4 +143,4 @@ MEDIA_URL = '/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
